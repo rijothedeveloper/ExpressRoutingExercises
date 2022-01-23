@@ -29,6 +29,17 @@ app.get("/median", function (req, res) {
   return res.json(response);
 });
 
+app.get("/mode", (req, res) => {
+  const numStr = req.query.nums;
+  if (!numStr) {
+    throw new MyAppError("input required", 400);
+  }
+  const nums = numStr.split(",");
+  const mode = calculateMode(nums);
+  const response = createResponse("mode", mode);
+  return res.json(response);
+});
+
 function calculateMean(nums) {
   let total = 0;
   for (let num of nums) {
@@ -39,7 +50,7 @@ function calculateMean(nums) {
 }
 
 function calculateMedian(nums) {
-  for (num of nums) {
+  for (let num of nums) {
     if (isNaN(num)) {
       throw new MyAppError("invalid input ", 400);
     }
@@ -47,6 +58,29 @@ function calculateMedian(nums) {
   nums.sort();
   let middle = nums[parseInt(nums.length / 2)];
   return middle;
+}
+
+function calculateMode(nums) {
+  const map = new Map();
+  for (let num of nums) {
+    if (isNaN(num)) {
+      throw new MyAppError("invalid input ", 400);
+    }
+    if (map.has(num)) {
+      map.set(num, map.get(num) + 1);
+    } else {
+      map.set(num, 1);
+    }
+  }
+  let max = 0;
+  let maxKey;
+  for (const [key, value] of map.entries()) {
+    if (value > max) {
+      maxKey = key;
+      max = value;
+    }
+  }
+  return maxKey;
 }
 
 function createResponse(operation, value) {
