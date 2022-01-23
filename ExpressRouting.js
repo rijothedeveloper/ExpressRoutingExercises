@@ -6,11 +6,14 @@ const app = express();
 app.get("/mean", (req, res) => {
   const numStr = req.query.nums;
   if (!numStr) {
-    err = new MyAppError("input required", 400);
     throw new MyAppError("input required", 400);
   }
   const nums = numStr.split(",");
   const mean = calculateMean(nums);
+  if (isNaN(mean)) {
+    throw new MyAppError("invalid input ", 400);
+  }
+
   const response = createResponse("mean", mean);
   return res.json(response);
 });
