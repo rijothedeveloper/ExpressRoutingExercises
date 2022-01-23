@@ -18,6 +18,17 @@ app.get("/mean", (req, res) => {
   return res.json(response);
 });
 
+app.get("/median", function (req, res) {
+  const numStr = req.query.nums;
+  if (!numStr) {
+    throw new MyAppError("input required", 400);
+  }
+  const nums = numStr.split(",");
+  const median = calculateMedian(nums);
+  const response = createResponse("median", median);
+  return res.json(response);
+});
+
 function calculateMean(nums) {
   let total = 0;
   for (let num of nums) {
@@ -25,6 +36,17 @@ function calculateMean(nums) {
     total += no;
   }
   return total / nums.length;
+}
+
+function calculateMedian(nums) {
+  for (num of nums) {
+    if (isNaN(num)) {
+      throw new MyAppError("invalid input ", 400);
+    }
+  }
+  nums.sort();
+  let middle = nums[parseInt(nums.length / 2)];
+  return middle;
 }
 
 function createResponse(operation, value) {
