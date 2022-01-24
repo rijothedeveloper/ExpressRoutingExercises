@@ -6,7 +6,7 @@ function calculateMean(nums) {
     no = parseInt(num);
     total += no;
   }
-  return total / nums.length;
+  return parseInt(total / nums.length);
 }
 
 function calculateMedian(nums) {
