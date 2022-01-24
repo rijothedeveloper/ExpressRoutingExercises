@@ -1,5 +1,6 @@
 const express = require("express");
 const MyAppError = require("./appError");
+const stat = require("./stat");
 
 const app = express();
 
@@ -9,7 +10,7 @@ app.get("/mean", (req, res) => {
     throw new MyAppError("input required", 400);
   }
   const nums = numStr.split(",");
-  const mean = calculateMean(nums);
+  const mean = stat.calculateMean(nums);
   if (isNaN(mean)) {
     throw new MyAppError("invalid input ", 400);
   }
@@ -24,7 +25,10 @@ app.get("/median", function (req, res) {
     throw new MyAppError("input required", 400);
   }
   const nums = numStr.split(",");
-  const median = calculateMedian(nums);
+  const median = stat.calculateMedian(nums);
+  if (median.status) {
+    throw median;
+  }
   const response = createResponse("median", median);
   return res.json(response);
 });
